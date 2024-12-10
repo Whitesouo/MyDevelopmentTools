@@ -139,7 +139,11 @@ class ExcelToJsonTool:
     def setup_ui(self):
         self.root.geometry("800x600")  # 设置窗口初始大小
         self.root.title("天狼星导表(ExToJs)小工具")
-        self.root.iconbitmap(r'C:\test\test.ico')
+
+        # 设置窗口图标为相对路径
+        current_dir = os.path.dirname(os.path.abspath(__file__))  # 获取当前脚本所在目录
+        icon_path = os.path.join(current_dir, 'Icon.ico')  # 构建相对路径
+        self.root.iconbitmap(icon_path)  # 使用相对路径设置图标
 
         # 选择文件按钮
         select_button = tk.Button(self.root, text="选择 Excel 文件", command=self.select_files)
