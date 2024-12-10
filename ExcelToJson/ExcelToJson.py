@@ -123,7 +123,6 @@
 
 
 # Ver 2.0 完整的json输出，支持自定义格式
-
 import os
 import tkinter as tk
 from tkinter import filedialog
@@ -133,17 +132,28 @@ import json
 class ExcelToJsonTool:
     def __init__(self, root):
         self.root = root
+        self.root : tk.Tk
         self.file_paths = []
         self.setup_ui()
 
     def setup_ui(self):
-        self.root.geometry("800x600")  # 设置窗口初始大小
+        self.root.geometry("800x600")
         self.root.title("天狼星导表(ExToJs)小工具")
 
-        # 设置窗口图标为相对路径
-        current_dir = os.path.dirname(os.path.abspath(__file__))  # 获取当前脚本所在目录
-        icon_path = os.path.join(current_dir, 'Icon.ico')  # 构建相对路径
-        self.root.iconbitmap(icon_path)  # 使用相对路径设置图标
+        # 设置窗口图标
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        icon_path = os.path.join(current_dir, 'Icon.ico')
+        self.root.iconbitmap(icon_path)
+
+        # 设置背景图片
+        bg_image_path = os.path.join(current_dir, 'background.png')  # 背景图片路径
+        if os.path.exists(bg_image_path):  # 确保背景图片存在
+            bg_image = tk.PhotoImage(file=bg_image_path)
+            bg_image
+            bg_label = tk.Label(self.root, image=bg_image)
+            bg_label.image = bg_image
+            bg_label.place(relwidth=1, relheight=1)
+        
 
         # 选择文件按钮
         select_button = tk.Button(self.root, text="选择 Excel 文件", command=self.select_files)
@@ -180,23 +190,27 @@ class ExcelToJsonTool:
             return
 
         try:
-            with xw.App(visible=False) as app:  # 使用 with 确保资源释放
+            with xw.App(visible=False) as app:
                 results = []
                 for file_path in self.file_paths:
                     wb = app.books.open(file_path)
                     output_dir = os.path.dirname(file_path)
 
                     for sheet in wb.sheets:
+                        sheet : xw.Sheet
+                        if sheet.name == "备注":  # 跳过工作表名为“备注”的表
+                            continue
+
                         total_rows = sheet.used_range.rows.count
                         total_cols = sheet.used_range.columns.count
 
-                        column_titles = sheet.range(f'1:1').value
-                        column_types = sheet.range(f'2:2').value
+                        column_titles = sheet.range(f'2:2').value
+                        column_types = sheet.range(f'3:3').value
 
                         column_mapping = {column_titles[i]: column_types[i] for i in range(total_cols)}
 
                         data_array = []
-                        for row_idx in range(3, total_rows + 1):
+                        for row_idx in range(4, total_rows + 1):
                             row_data = sheet.range(f'{row_idx}:{row_idx}').value
                             if not any(row_data):
                                 continue
@@ -232,14 +246,14 @@ class ExcelToJsonTool:
                             data_array.append(row_dict)
 
                         sheet_output = json.dumps(data_array, ensure_ascii=False, indent=4)
-                        output_file_path = os.path.join(output_dir, f"{sheet.name}.txt")
+                        output_file_path = os.path.join(output_dir, f"{sheet.name}.json")
                         with open(output_file_path, 'w', encoding='utf-8') as f:
                             f.write(sheet_output)
 
-                        results.append(f"{sheet.name}: 已导出到 {output_dir}")
+                        results.append(f"{sheet.name}.json : 已导出到 {output_dir}")
 
                     wb.close()
-                    del wb  # 显式删除工作簿对象
+                    del wb
 
                 self.text_output.delete(1.0, tk.END)
                 self.text_output.insert(tk.END, "\n".join(results))
