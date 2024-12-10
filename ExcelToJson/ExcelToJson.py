@@ -128,6 +128,7 @@ import tkinter as tk
 from tkinter import filedialog
 import xlwings as xw
 import json
+import sys
 
 class ExcelToJsonTool:
     def __init__(self, root):
@@ -140,20 +141,17 @@ class ExcelToJsonTool:
         self.root.geometry("800x600")
         self.root.title("天狼星导表(ExToJs)小工具")
 
-        # 设置窗口图标
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-        icon_path = os.path.join(current_dir, 'Icon.ico')
+        # 设置窗口图标为相对路径
+        icon_path = self.resource_path('Icon.ico')
         self.root.iconbitmap(icon_path)
 
         # 设置背景图片
-        bg_image_path = os.path.join(current_dir, 'background.png')  # 背景图片路径
+        bg_image_path = self.resource_path('background.png')  # 背景图片路径
         if os.path.exists(bg_image_path):  # 确保背景图片存在
             bg_image = tk.PhotoImage(file=bg_image_path)
-            bg_image
             bg_label = tk.Label(self.root, image=bg_image)
             bg_label.image = bg_image
             bg_label.place(relwidth=1, relheight=1)
-        
 
         # 选择文件按钮
         select_button = tk.Button(self.root, text="选择 Excel 文件", command=self.select_files)
@@ -170,6 +168,24 @@ class ExcelToJsonTool:
         # 显示输出的文本
         self.text_output = tk.Text(self.root, width=80, height=20)
         self.text_output.pack(pady=10)
+
+    def resource_path(self, relative_path):
+        """获取资源的绝对路径"""
+        try:
+            # 如果是打包后的应用，使用 _MEIPASS 路径
+            base_path = sys._MEIPASS
+        except AttributeError:
+            # 否则使用脚本所在路径
+            base_path = os.path.abspath(".")
+        return os.path.join(base_path, relative_path)
+
+    def select_files(self):
+        # 添加文件选择逻辑
+        pass
+
+    def process_files(self):
+        # 添加文件处理逻辑
+        pass
 
     def select_files(self):
         self.file_paths = filedialog.askopenfilenames(
