@@ -2,6 +2,7 @@ import xlwings as xw
 import keyboard
 import tkinter as tk
 from tkinter import messagebox
+import os
 
 # # 方法1: 改变选中单元格的字体颜色和加粗，除非是 ">"
 # def Blue_color_and_bold_except_greater_than():
@@ -175,7 +176,11 @@ def create_ui_window():
     window = tk.Tk()
     window.geometry("800x600")  # 设置窗口初始大小
     window.title("天狼星策划文档编写小工具")
-    window.iconbitmap(r'C:\test\test.ico')
+    
+    # 设置窗口图标为相对路径
+    current_dir = os.path.dirname(os.path.abspath(__file__))  # 获取当前脚本所在目录
+    icon_path = os.path.join(current_dir, 'Icon.ico')  # 构建相对路径
+    window.iconbitmap(icon_path)  # 使用相对路径设置图标
     
     # 创建方法按钮
     method1_btn = tk.Button(window, text="标记为属性 (Ctrl+Shift+D)", command=Blue_color_and_bold_except_greater_than)
