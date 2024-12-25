@@ -142,11 +142,12 @@ class ExcelToJsonTool:
         self.root.title("天狼星导表(ExToJs)小工具")
 
         # 设置窗口图标为相对路径
-        icon_path = self.resource_path('Icon.ico')
-        self.root.iconbitmap(icon_path)
+        current_dir = os.path.dirname(os.path.abspath(__file__))  # 获取当前脚本所在目录
+        icon_path = os.path.join(current_dir, 'Icon.ico')  # 构建相对路径
+        self.root.iconbitmap(icon_path)  # 使用相对路径设置图标
 
         # 设置背景图片
-        bg_image_path = self.resource_path('background.png')  # 背景图片路径
+        bg_image_path = os.path.join(current_dir,'background.png')  # 构建相对路径
         if os.path.exists(bg_image_path):  # 确保背景图片存在
             bg_image = tk.PhotoImage(file=bg_image_path)
             bg_label = tk.Label(self.root, image=bg_image)
@@ -262,6 +263,10 @@ class ExcelToJsonTool:
                             data_array.append(row_dict)
 
                         sheet_output = json.dumps(data_array, ensure_ascii=False, indent=4)
+
+                        # 后处理，替换所有的 \\ 为 \
+                        sheet_output = sheet_output.replace('\\\\', '\\')
+                        
                         output_file_path = os.path.join(output_dir, f"{sheet.name}.json")
                         with open(output_file_path, 'w', encoding='utf-8') as f:
                             f.write(sheet_output)
