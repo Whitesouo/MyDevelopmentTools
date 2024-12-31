@@ -113,6 +113,10 @@ def Commentize():
         selected_range.font.color = (75, 75, 75)  # 设置文字颜色
         selected_range.font.bold = False         # 设置加粗
         selected_range.font.italic = True        # 设置斜体
+        # 获取当前字体大小并减小两次
+        current_size = selected_range.font.size
+        if current_size is not None:
+            selected_range.font.size = current_size - 2  # 减少字体大小 2 个点
         print("Font color changed, bold removed, and italic applied.")
     except Exception as e:
         messagebox.showerror("Error", f"An error occurred: {e}")
