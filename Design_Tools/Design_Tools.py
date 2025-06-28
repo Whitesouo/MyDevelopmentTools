@@ -1,3 +1,4 @@
+import sys
 import xlwings as xw
 import keyboard
 import tkinter as tk
@@ -174,6 +175,12 @@ def bind_shortcut_keys():
     keyboard.add_hotkey('ctrl+shift+c', Commentize)                               # 快捷键 CTRL+SHIFT+C
     keyboard.add_hotkey('ctrl+shift+e', Yellow_color_and_bold_except_greater_than)
 
+def get_executable_path():
+    if getattr(sys, 'frozen', False):  # 如果是冻结状态 (打包后的)
+        return os.path.dirname(sys.executable)
+    else:
+        return os.path.dirname(os.path.abspath(__file__))  # 运行时
+    
 
 # 创建UI窗口
 def create_ui_window():
@@ -182,7 +189,7 @@ def create_ui_window():
     window.title("天狼星策划文档编写小工具")
     
     # 设置窗口图标为相对路径
-    current_dir = os.path.dirname(os.path.abspath(__file__))  # 获取当前脚本所在目录
+    current_dir = get_executable_path()  # 获取当前脚本所在目录
     icon_path = os.path.join(current_dir, 'Icon.ico')  # 构建相对路径
     window.iconbitmap(icon_path)  # 使用相对路径设置图标
     
